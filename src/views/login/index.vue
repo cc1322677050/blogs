@@ -47,11 +47,8 @@
   import { setCookie,getCookie,delCookie} from '@/utils/cookie.js'
 
   const checkEmail = (rule, value, callback) => {
-    let re =  /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
     if (isvalidlength(value)) {
       callback(new Error('邮箱需要小于6位'))
-    }  else if (!re.test(value)) {
-      callback(new Error('邮箱格式不正确'))
     } else {
       callback()
     }
