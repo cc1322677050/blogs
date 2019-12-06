@@ -30,12 +30,11 @@
       <el-checkbox
         v-model="ruleForm.checked"
         class="rememberme">记住密码</el-checkbox>
-
       <el-form-item style="width:100%;">
         <el-button type="primary" style="width:100%;"  @click.native.prevent="handleSubmit" :loading="logining">登录</el-button>
       </el-form-item>
       <el-form-item style="width:100%;">
-        <router-link  class="main_color login" to="/register" style="width:100%;margin-left: 63%"  @click="register">没有账号，立即注册</router-link>
+        <router-link  class="main_color login" to="/register" style="width:100%;"  @click="register">没有账号，立即注册</router-link>
       </el-form-item>
     </el-form>
   </div>
@@ -47,12 +46,9 @@
   import { setCookie,getCookie,delCookie} from '@/utils/cookie.js'
 
   const checkEmail = (rule, value, callback) => {
-    let re =  /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
     if (isvalidlength(value)) {
-      callback(new Error('邮箱需要小于6位'))
-    }  else if (!re.test(value)) {
-      callback(new Error('邮箱格式不正确'))
-    } else {
+      callback(new Error('用户名不小于6位'))
+    }  else {
       callback()
     }
   };

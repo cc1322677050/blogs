@@ -10,7 +10,7 @@
             ref="RegisterForm"
             label-width="0">
             <el-form-item prop="email">
-              <el-input v-model="RegisterForm.email" auto-complete="off" placeholder="请输入邮箱"></el-input>
+              <el-input v-model="RegisterForm.email" auto-complete="off" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item prop="pass">
               <el-input type="password" v-model="RegisterForm.pass" auto-complete="off" placeholder="输入密码"></el-input>
@@ -39,15 +39,12 @@
     name: "Register",
     data() {
       const checkEmail = (rule, value, callback) => {
-        let re =  /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
         if (value === '') {
-          callback(new Error('请输入邮箱'))
-        } else if (!re.test(value)) {
-          callback(new Error('邮箱格式不正确'))
+          callback(new Error('请输入用户名'))
         } else {
           callback()
         }
-      }
+      };
       //  <!--验证码是否为空-->
       const checkSmscode = (rule, value, callback) => {
         if (value === '') {
