@@ -6,11 +6,10 @@
           <el-form
             :model="RegisterForm"
             status-icon
-            :rules="rules2"
-            ref="RegisterForm"
-            label-width="0">
-            <el-form-item prop="email">
-              <el-input v-model="RegisterForm.email" auto-complete="off" placeholder="请输入用户名"></el-input>
+            :rules="rules"
+            ref="RegisterForm">
+            <el-form-item prop="username">
+              <el-input v-model="RegisterForm.username" auto-complete="off" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item prop="pass">
               <el-input type="password" v-model="RegisterForm.pass" auto-complete="off" placeholder="输入密码"></el-input>
@@ -18,12 +17,12 @@
             <el-form-item prop="checkPass">
               <el-input type="password" v-model="RegisterForm.checkPass" auto-complete="off" placeholder="确认密码"></el-input>
             </el-form-item>
-            <el-form-item prop="smscode">
-              <el-input v-model="RegisterForm.smscode" placeholder="验证码" style="width: 50%;float: left"></el-input>
-              <validcode ref="code"  style="float: right;box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1)"></validcode>
+            <el-form-item prop="validcode">
+              <el-input v-model="RegisterForm.validcode" placeholder="验证码" style="width: 50%;float: left"></el-input>
+              <validcode ref="code"  v-model="validcode" style="float: right;box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1)"></validcode>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('RegisterForm')" style="width:100%;">注册</el-button>
+              <el-button type="primary" @click.native.prevent="submitForm" style="width:100%;" :loading="logining">注册</el-button>
               <p class="login" @click="gotoLogin">已有账号？立即登录</p>
             </el-form-item>
           </el-form>
@@ -34,32 +33,34 @@
 
 <script>
   import validcode from '@/components/validcode'
+  import {isvalidlength}  from "@/utils/validate"
+  import {register} from "@/api/users"
 
   export default {
     name: "Register",
     data() {
-      const checkEmail = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入用户名'))
+      const checkusername = (rule, value, callback) => {
+        if (isvalidlength(value)) {
+            callback(new Error('用户名不小于6位'))
         } else {
           callback()
         }
       };
       //  <!--验证码是否为空-->
-      const checkSmscode = (rule, value, callback) => {
+      const checkvalidcode = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请输入验证码'))
+            callback(new Error('请输入验证码'))
         } else {
-          callback()
+            callback()
         }
       }
       // <!--验证密码-->
       const validatePass = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error("请输入密码"))
+        if (isvalidlength(value)) {
+            callback(new Error('密码不能小于6位'))
         } else {
           if (this.RegisterForm.checkPass !== "") {
-            this.$refs.RegisterForm.validateField("checkPass");
+            this.$refs.RegisterForm.validateField("checkPass2");
           }
           callback()
         }
@@ -75,34 +76,50 @@
         }
       };
       return {
+          logining: false,
+          validcode:"",
         RegisterForm: {
           pass: "",
           checkPass: "",
-          email: "",
-          smscode: ""
+          username: "",
+          validcode: ""
         },
-        rules2: {
-          pass: [{ validator: validatePass, trigger: 'blur' }],
-          checkPass: [{ validator: validatePass2, trigger: 'blur' }],
-          email: [{ validator: checkEmail, trigger: 'blur' }],
-          smscode: [{ validator: checkSmscode, trigger: 'blur' }],
+        rules: {
+          pass: [{ validator: validatePass, trigger: 'blur',required:true }],
+          checkPass: [{ validator: validatePass2, trigger: 'blur',required:true }],
+          username: [{ validator: checkusername, trigger: 'blur',required:true }],
+          validcode: [{ validator: checkvalidcode, trigger: 'blur',required:true }],
         },
-        buttonText: '发送验证码',
-        isDisabled: false, // 是否禁止点击发送验证码按钮
-        flag: true
       }
     },
     methods: {
-      // <!--提交注册-->
-      submitForm(formName) {
-        this.$refs[formName].validate(valid => {
+      submitForm() {
+        this.$refs.RegisterForm.validate(valid => {
           if (valid) {
-            setTimeout(() => {
-              alert('注册成功')
-            }, 400);
-          } else {
-            console.log("error submit!!");
-            return false;
+              this.logining=true;
+              console.log(this.validcode);
+              //验证码错误
+              if (this.validcode.toLowerCase()!=this.RegisterForm.validcode.toLowerCase()) {
+                  this.$refs.code.createdCode()
+                  this.$alert('Verification code error!', 'error', {
+                      confirmButtonText: 'ok'
+                  })
+                  this.$refs.code.refreshCode()
+                  this.logining=false;
+              }
+              register(this.RegisterForm.username,this.RegisterForm.pass).then(response=>{
+                  this.logining=false;
+                  if (response.code===200){
+                      this.$alert('Registered Successfully!', 'info', {
+                          confirmButtonText: 'ok'
+                      })
+                      this.$router.push({path: '/login'})
+                  }
+              })
+            } else {
+              this.logining=false;
+              console.log("error submit!!");
+              return false;
           }
         })
       },
