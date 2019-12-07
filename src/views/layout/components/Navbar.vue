@@ -2,7 +2,7 @@
   <el-menu class="navbar" mode="horizontal">
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-      <el-avatar :size="size" :src="avatar"></el-avatar>  <span>{{nickname}}</span>
+      <el-avatar :src="avatar"></el-avatar>  <span>{{nickname}}</span>
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
