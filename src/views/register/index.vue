@@ -34,7 +34,7 @@
 <script>
   import validcode from '@/components/validcode'
   import {isvalidlength}  from "@/utils/validate"
-  import {register} from "@/api/users"
+  import {register,checkeUseranem} from "@/api/users"
 
   export default {
     name: "Register",
@@ -42,8 +42,17 @@
       const checkusername = (rule, value, callback) => {
         if (isvalidlength(value)) {
             callback(new Error('用户名不小于6位'))
-        } else {
-          callback()
+        } else{
+          var username={
+            username:value
+          };
+          checkeUseranem(username).then(response=>{
+            if (response.code===500){
+              callback(new Error('用户名已经被注册'))
+            }else {
+              callback()
+            }
+          })
         }
       };
       //  <!--验证码是否为空-->

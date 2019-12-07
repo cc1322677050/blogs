@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {Message,MessageBox} from "element-ui";
-import { getToken } from '@/utils/cookie'
+import { getToken } from '@/utils/auth'
 
 /**
  * 请求封装
@@ -25,11 +25,12 @@ service.interceptors.request.use(config => {
 })
 
 service.interceptors.response.use(response =>{
-  const res=response.data;
+  const res=response;
+  console.log(res)
   //若状态码！=200直接返回错误
-  if(res.code!==200){
+  if(res.status!==200){
     Message({
-      message: res.message,
+      message: res.status,
       type: 'error',
       duration: 3 * 1000
     })

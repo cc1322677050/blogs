@@ -103,27 +103,31 @@
           if(valid){
             this.logining = true;
             if (this.validcode.toLowerCase()!=this.ruleForm.validcode.toLowerCase()){
+              this.logining = false
               this.$refs.code.refreshCode()
               this.$alert('Verification code error!', 'error', {
                 confirmButtonText: 'ok'
               })
               }else {
-                login(this.ruleForm.username,this.ruleForm.password).then(response=>{
-                    if (this.ruleForm.checked){
-                        setCookie("username",this.ruleForm.username,7);
-                        setCookie("password",this.ruleForm.password,7);
-                        setCookie("checked",this.ruleForm.checked,7);
-                    }else {
-                        delCookie("username");
-                        delCookie("checked");
-                        delCookie("password");
-                    }
-                })
-                this.$router.push({path: '/home'});
+              this.$store.dispatch('Login', this.ruleForm).then(() => {
                 this.logining = false;
+                if (this.ruleForm.checked){
+                  setCookie("username",this.ruleForm.username,7);
+                  setCookie("password",this.ruleForm.password,7);
+                  setCookie("checked",this.ruleForm.checked,7);
+                }else {
+                  delCookie("username");
+                  delCookie("checked");
+                  delCookie("password");
+                }
+                this.$router.push({path: '/home'});
+              }).catch(() => {
+                this.$refs.code.refreshCode()
+                this.logining = false
                 this.$alert('username or password  wrong!', 'error', {
                   confirmButtonText: 'ok'
                 })
+              })
             }
           }else{
             console.log('error submit!');
