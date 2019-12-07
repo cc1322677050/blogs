@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form :model="ruleForm" :rules="rules"
              status-icon
-             ref="LognForm"
+             ref="LoginForm"
              label-position="left"
              label-width="0px"
              class="login-page">
@@ -30,12 +30,11 @@
       <el-checkbox
         v-model="ruleForm.checked"
         class="rememberme">记住密码</el-checkbox>
-
       <el-form-item style="width:100%;">
         <el-button type="primary" style="width:100%;"  @click.native.prevent="handleSubmit" :loading="logining">登录</el-button>
       </el-form-item>
       <el-form-item style="width:100%;">
-        <router-link  class="main_color login" to="/register" style="width:100%;margin-left: 63%"  @click="register">没有账号，立即注册</router-link>
+        <router-link  class="main_color login" to="/register" style="width:100%;"  @click="register">没有账号，立即注册</router-link>
       </el-form-item>
     </el-form>
   </div>
@@ -44,12 +43,14 @@
 <script>
   import {isvalidlength}  from "@/utils/validate"
   import validcode from '@/components/validcode'
-  import { setCookie,getCookie,delCookie} from '@/utils/cookie.js'
+  import { setCookie,getCookie,delCookie} from '@/utils/cookie'
+  import {login} from '@/api/users'
+
 
   const checkEmail = (rule, value, callback) => {
     if (isvalidlength(value)) {
-      callback(new Error('邮箱需要小于6位'))
-    } else {
+      callback(new Error('用户名不小于6位'))
+    }  else {
       callback()
     }
   };
@@ -61,7 +62,6 @@
       callback()
     }
   };
-
   //  <!--验证码是否为空-->
   const checkSmscode = (rule, value, callback) => {
     if (value === '') {
@@ -69,7 +69,7 @@
     } else {
       callback()
     }
-  }
+  };
   export default {
     data(){
       return {
@@ -84,7 +84,7 @@
         rules: {
           username: [{required: true, trigger: 'blur',validator:checkEmail}],
           password: [{required: true, trigger: 'blur',validator:validatePass}],
-          validcode: [{ validator: checkSmscode, trigger: 'blur' }],
+          validcode: [{ required: true,trigger: 'blur',validator: checkSmscode}],
         },
       }
     },
@@ -99,33 +99,31 @@
         this.$router.push({path:"/register"})
       },
       handleSubmit(){
-        this.$refs.LognForm.validate((valid) => {
+        this.$refs.LoginForm.validate((valid) => {
           if(valid){
             this.logining = true;
-            if(this.ruleForm.username === 'admin12' &&
-              this.ruleForm.password === '123456'){
-              this.logining = false;
-              if (this.validcode.toLowerCase()!=this.ruleForm.validcode.toLowerCase()){
-                this.$alert('Verification code error!', 'error', {
-                  confirmButtonText: 'ok'
-                })
-              }else {
-                if (this.ruleForm.checked){
-                  setCookie("username",this.ruleForm.username,7);
-                  setCookie("password",this.ruleForm.password,7);
-                  setCookie("checked",this.ruleForm.checked,7);
-                }else {
-                  delCookie("username");
-                  delCookie("checked");
-                  delCookie("password");
-                }
-                this.$router.push({path: '/home'});
-              }
-            }else{
-              this.logining = false;
-              this.$alert('username or password  wrong!', 'error', {
+            if (this.validcode.toLowerCase()!=this.ruleForm.validcode.toLowerCase()){
+              this.$refs.code.refreshCode()
+              this.$alert('Verification code error!', 'error', {
                 confirmButtonText: 'ok'
               })
+              }else {
+                login(this.ruleForm.username,this.ruleForm.password).then(response=>{
+                    if (this.ruleForm.checked){
+                        setCookie("username",this.ruleForm.username,7);
+                        setCookie("password",this.ruleForm.password,7);
+                        setCookie("checked",this.ruleForm.checked,7);
+                    }else {
+                        delCookie("username");
+                        delCookie("checked");
+                        delCookie("password");
+                    }
+                })
+                this.$router.push({path: '/home'});
+                this.logining = false;
+                this.$alert('username or password  wrong!', 'error', {
+                  confirmButtonText: 'ok'
+                })
             }
           }else{
             console.log('error submit!');
