@@ -34,7 +34,7 @@
         <el-button type="primary" style="width:100%;"  @click.native.prevent="handleSubmit" :loading="logining">登录</el-button>
       </el-form-item>
       <el-form-item style="width:100%;">
-        <router-link  class="main_color login" to="/register" style="width:100%;"  @click="register">没有账号，立即注册</router-link>
+        <router-link  class="main_color login "  to="/register" style="width:100%;text-decoration: none;"  @click="register">没有账号，立即注册</router-link>
       </el-form-item>
     </el-form>
   </div>
@@ -44,7 +44,7 @@
   import {isvalidlength}  from "@/utils/validate"
   import validcode from '@/components/validcode'
   import { setCookie,getCookie,delCookie} from '@/utils/cookie'
-  import {login} from '@/api/users'
+
 
 
   const checkEmail = (rule, value, callback) => {

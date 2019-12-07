@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {Message,MessageBox} from "element-ui";
+import store from '../store'
 import { getToken } from '@/utils/auth'
 
 /**
@@ -12,11 +13,13 @@ const service = axios.create({
 })
 
 
+
 // request拦截器
 service.interceptors.request.use(config => {
-  // if (store.getters.token) {
-  //   config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
-  // }
+  if (store.getters.token) {
+    config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+  }
+  config.headers['Access-Control-Allow-Headers']="X-Requested-With"
   return config
 }, error => {
   // Do something with request error
@@ -26,7 +29,7 @@ service.interceptors.request.use(config => {
 
 service.interceptors.response.use(response =>{
   const res=response;
-  console.log(res)
+  // console.log(res)
   //若状态码！=200直接返回错误
   if(res.status!==200){
     Message({

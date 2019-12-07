@@ -23,6 +23,8 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click.native.prevent="submitForm" style="width:100%;" :loading="logining">注册</el-button>
+            </el-form-item>
+            <el-form-item>
               <p class="login" @click="gotoLogin">已有账号？立即登录</p>
             </el-form-item>
           </el-form>
