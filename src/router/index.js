@@ -21,12 +21,27 @@ export const constantRouterMap = [
     path: '',
     component: Layout,
     redirect: '/info',
-    children: [{
-      path: 'info',
-      name: 'info',
-      component: () => import('@/views/user/index'),
-      meta: {title: '个人用户', icon: 'home'}
-    }]
+    meta: {title: '我的工作台', icon: 'product'},
+    children: [
+    {
+      path: 'controller',
+      name: 'controller',
+      component: () => import('@/views/controller/index'),
+      meta: {title: '控制台', icon: 'home'}
+    },
+    {
+      path: 'user',
+      name: 'user',
+      component: () => import('@/views/controller/user/index'),
+      meta: {title: '我的信息', icon: 'home'}
+    },
+    {
+      path: 'friend',
+      name: 'friend',
+      component: () => import('@/views/controller/friend/index'),
+      meta: {title: '我的好友', icon: 'home'}
+    },
+    ]
   },
 
 ]

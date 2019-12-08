@@ -38,7 +38,7 @@ export function register(userName, userPassword) {
 
 export function checkeUseranem(params) {
   return request({
-    url: '/user/check',
+    url: '/controller/check',
     method: 'GET',
     params:params
   })
