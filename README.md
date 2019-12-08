@@ -1,6 +1,6 @@
-# blogs
-#博客前端页面
-###作者:程成
+#  blogs
+#  博客前端页面
+###  作者:程成
 > A Vue.js project
 
 ## Build Setup
