@@ -6,6 +6,7 @@ Vue.use(Router)
 export const constantRouterMap = [
   {path: '/login', component: () => import('@/views/login/index'), hidden:true},
   {path: '/register', component:() => import('@/views/register/index'), hidden:true},
+  {path:'/write',component:()=>import("@/views/blog/index"),hidden:true},
   {
     path: '',
     component: Layout,
@@ -35,15 +36,8 @@ export const constantRouterMap = [
       component: () => import('@/views/controller/user/index'),
       meta: {title: '我的信息', icon: 'home'}
     },
-    {
-      path: 'friend',
-      name: 'friend',
-      component: () => import('@/views/controller/friend/index'),
-      meta: {title: '我的好友', icon: 'home'}
-    },
     ]
   },
-
 ]
 
 export default new Router({

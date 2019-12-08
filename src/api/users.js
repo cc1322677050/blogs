@@ -38,8 +38,16 @@ export function register(userName, userPassword) {
 
 export function checkeUseranem(params) {
   return request({
-    url: '/controller/check',
+    url: '/user/check',
     method: 'GET',
     params:params
+  })
+}
+
+export function updataUserInfo(userId,data) {
+  return request({
+    url: '/user/updata/'+userId,
+    method: 'Post',
+    data:data
   })
 }
