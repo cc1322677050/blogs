@@ -1,35 +1,37 @@
 <template>
   <div>
-    <div style="width: 50%;">
+    <div style="width: 100%;">
       <el-form :model="userInfoForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="用户头像：" >
+        <el-form-item style="float: left;width: 50%;margin-top: 4%">
             <UpdataProFilePhoto v-on:imageurl="listenToMyBoy"  v-model="userInfoForm.userProfilePhoto"></UpdataProFilePhoto>
         </el-form-item>
-        <el-form-item label="用户名：" prop="name" style="width: 25%" >
-          <span class="spanfont">{{userInfoForm.userName}}</span>
-        </el-form-item>
-        <el-form-item label="昵 称：" prop="昵称" style="width: 25%" >
-          <el-input :value="userInfoForm.userNickname" v-model="userInfoForm.userNickname"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱："   prop="userEmail"  style="width: 50%;">
-          <el-input :value="userInfoForm.userEmail" v-model="userInfoForm.userEmail"></el-input>
-        </el-form-item>
-        <el-form-item label="电话号码：" prop="userTelephoneNumber" style="width: 50%;">
-          <el-input :value="userInfoForm.userTelephoneNumber" v-model="userInfoForm.userTelephoneNumber"></el-input>
-        </el-form-item>
-        <el-form-item label="用户生日：" required style="width: 50%" >
-          <el-date-picker @blur="jsGetAge" value-format=" yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期" :value="userInfoForm.userBirthday" v-model="userInfoForm.userBirthday" style="width: 100%;" required></el-date-picker>
-        </el-form-item>
-        <el-form-item label="年 龄：" prop="name" required style="width: 50%;">
-          <span class="spanfont">{{userInfoForm.userAge}}岁</span>
-        </el-form-item>
-        <el-form-item label="注册时间">
-          <span class="spanfont">{{userInfoForm.userRegistrationTime}}</span>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="mini" @click.native.preventk="submitForm" :loading="loading">立即保存</el-button>
-          <el-button  size="mini" @click="resetForm('userInfoForm')">重置</el-button>
-        </el-form-item>
+        <div style="float: right;width: 50%;margin-top: 6%">
+          <el-form-item label="用户名：" prop="name" style="width: 25%" >
+            <span class="spanfont">{{userInfoForm.userName}}</span>
+          </el-form-item>
+          <el-form-item label="昵 称：" prop="昵称" style="width: 25%" >
+            <el-input :value="userInfoForm.userNickname" v-model="userInfoForm.userNickname"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱："   prop="userEmail"  style="width: 50%;">
+            <el-input :value="userInfoForm.userEmail" v-model="userInfoForm.userEmail"></el-input>
+          </el-form-item>
+          <el-form-item label="电话号码：" prop="userTelephoneNumber" style="width: 50%;">
+            <el-input :value="userInfoForm.userTelephoneNumber" v-model="userInfoForm.userTelephoneNumber"></el-input>
+          </el-form-item>
+          <el-form-item label="用户生日：" required style="width: 50%" >
+            <el-date-picker @blur="jsGetAge" value-format=" yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期" :value="userInfoForm.userBirthday" v-model="userInfoForm.userBirthday" style="width: 100%;" required></el-date-picker>
+          </el-form-item>
+          <el-form-item label="年 龄：" prop="name" required style="width: 50%;">
+            <span class="spanfont">{{userInfoForm.userAge}}岁</span>
+          </el-form-item>
+          <el-form-item label="注册时间">
+            <span class="spanfont">{{userInfoForm.userRegistrationTime}}</span>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click.native.preventk="submitForm" :loading="loading">立即保存</el-button>
+            <el-button  size="mini" @click="resetForm('userInfoForm')">重置</el-button>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
   </div>

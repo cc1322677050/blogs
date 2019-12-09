@@ -7,20 +7,67 @@
     </mavon-editor>
     <el-dialog
       title="上传图片中。。。。。。。。。"
-      :visible.sync="dialogVisible"
+      :visible.sync="image.dialogVisible"
       width="20%">
       <el-progress style="margin-left: 25%" type="circle" :percentage="progressPercent"></el-progress>
     </el-dialog>
-
+    <el-dialog
+      title="文章设置"
+      :visible.sync="dialogVisible"
+      width="40%">
+      <el-input type="text" v-model="article.articleTitle" :value="article.articleTitle" placeholder="请为文章设置一个标题" required="true"></el-input>
+      <el-divider content-position="left">请为文章设置分类</el-divider>
+        <el-tree
+          :data="treedata"
+          show-checkbox
+          ref="tree"
+          @check-change="handleCheckChange"
+          :props="defaultProps">
+        </el-tree>
+      <el-divider content-position="left">请为文章设置标签</el-divider>
+      <div>
+        <span style="margin-right:20px;">
+           <el-checkbox-group v-model="article.labels">
+              <el-checkbox v-for="(item, index) in lables" :key="item.labelId" :label="item">{{item.labelName}}</el-checkbox>
+            </el-checkbox-group>
+        </span>
+        <div style="text-align: center">
+          <el-pagination
+            small
+            layout="prev, pager, next,total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-size="listQuery.pageSize"
+            :current-page.sync="listQuery.pageNum"
+            :total="total">
+          </el-pagination>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="saveDocs" size="small">保存</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-
   export default {
     data(){
       return{
+        listQuery: {
+          pageNum: 1,
+          pageSize: 10
+        },
+        defaultProps: {
+          label: 'sortName',
+          children: 'children'
+        },
+        total:0,
+        lables:[],
+        treedata:[],
+        checkedItem:[],
         toolbars: {
           bold: true, // 粗体
           italic: true, // 斜体
@@ -45,7 +92,7 @@
           undo: true, // 上一步
           redo: false, // 下一步
           trash: false, // 清空
-          save: false, // 保存（触发events中的save事件）
+          save: true, // 保存（触发events中的save事件）
           /* 1.4.2 */
           navigation: false, // 导航目录
           /* 2.1.8 */
@@ -58,27 +105,69 @@
           boxShadow: false
         },
         markdownEditor:{
-          text:""
+          text:"",
+        },
+        image:{
+          dialogVisible:false
         },
         imgFile:[],
         progressPercent:0,
         token:this.$store.getters.avatar.token,
         dialogVisible:false,
+        article:{
+          userId:this.$store.getters.userId,
+          articleTitle:"",
+          articleContent:"",
+          articleMarkdown:"",
+          sorts:[],
+          labels:[]
+        },
       }
     },
     methods:{
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
+      getTreeSort() {
+        axios({
+          headers: {
+            Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
+          },
+          url: process.env.BASE_API + "/sort/tree",
+          method: 'GET',
+        }).then(res=>{
+          this.treedata=res.data.data
+        })
+      },
+      getLables(){
+        axios({
+          headers: {
+            Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
+          },
+          url: process.env.BASE_API + "/lable/list",
+          method: 'POST',
+          params:this.listQuery,
+        }).then(res=>{
+          res=res.data;
+          this.lables=res.data.records;
+          this.list = res.data.list;
+          this.total = res.data.total;
+        })
+      },
+      saveArticle(){
+        axios({
+            headers: {
+              Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
+            },
+            url: process.env.BASE_API + "/article/save",
+            method: 'POST',
+            data:this.article,
+            }).then(res=>{
+              console.log(res.data)
           })
-          .catch(_ => {});
       },
       handleEditorImgAdd (pos, f) {
         let formdata = new FormData();
         formdata.append('image', f)
         this.imgFile[pos] = f;
-        this.dialogVisible=true
+        this.image.dialogVisible=true;
         axios({
             headers: {
               Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
@@ -89,8 +178,8 @@
             onUploadProgress: progressEvent => {
               this.progressPercent = (progressEvent.loaded / progressEvent.total * 100)
             }}).then(res => {
-              this.dialogVisible=false;
               if (res.data.code === 200) {
+                this.image.dialogVisible=false;
                 console.log("上传成功")
                 let url = res.data.data
                 let name = f.name
@@ -110,22 +199,39 @@
                   this.markdownEditor.text = insertStr(str, index, nStr)
                 }
               } else {
-                this.dialogVisible=false;
                 console.log("error")
             }
         })
+      },
+      handleCheckChange(){
+        this.article.sorts=this.$refs.tree.getCheckedNodes()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.pageNum = val;
+        this.getLables();
+      },
+      handleSizeChange(val) {
+        this.listQuery.pageNum = 1;
+        this.listQuery.pageSize = val;
+        this.getLables();
       },
       handleEditorImgDel (pos) {
         delete this.imgFile[pos]
       },
       saveDoc(markdown, html) {
+        this.article.articleMarkdown=markdown;
+        this.article.articleContent=html;
+        this.dialogVisible=true
+      },
+      saveDocs(){
         this.$confirm('此操作将保存编辑信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          // console.log(markdown)
-          // console.log(html)
+          this.saveArticle()
+          this.dialogVisible = false
+          console.log(this.article)
           this.$message({
             type: 'success',
             message: '保存成功!'
@@ -137,6 +243,9 @@
           });
         });
       }
+    },created() {
+      this.getTreeSort();
+      this.getLables();
     }
   }
 </script>

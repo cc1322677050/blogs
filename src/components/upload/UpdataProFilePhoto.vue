@@ -76,8 +76,8 @@
   }
   .head-img{
     margin-top: 1%;
-    width: 85px;
-    height: 85px;
+    width: 750px;
+    height: 500px;
     border-radius:5px 5px 5px 5px;
   }
 </style>
