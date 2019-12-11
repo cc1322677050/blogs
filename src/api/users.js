@@ -51,3 +51,10 @@ export function updataUserInfo(userId,data) {
     data:data
   })
 }
+
+export function getUserByUserId(UserId) {
+  return request({
+    url:"/user/info/"+UserId,
+    method:"POST",
+  })
+}

@@ -1,22 +1,68 @@
 <template>
   <div>
+    <Navbar></Navbar>
     <el-row class="main" type="flex" justify="center">
       <el-col :span="16">
-
+        <div id="artcle-info">
+          <h2 class="text-center"><strong>{{article.articleTitle}}</strong></h2>
+          <!-- 描述：文章信息 -->
+          <div class="text-center timeAndView">
+						<span class="article-time">
+							<i class="el-icon-time"></i>
+							发表于：<span>{{article.articleDate}}</span>
+						</span>
+            &nbsp;|&nbsp;
+            <span class="article-views">
+							<i class="el-icon-view"></i>
+							阅读量：{{article.articleViews}}
+						</span>
+          </div>
+          <p class="abstract">
+            前言：{{article.description}}
+          </p>
+        </div>
+        <div id="artcle-content">
+          <p v-html="article.articleContent"></p>
+        </div>
+        <div id="statement">
+          <div class="item">作者：{{userinfo.userNickname}}</div>
+          <div class="item">联系方式：{{userinfo.userEmail}}</div>
+          <div class="item">版权声明：本博客所有文章除特别声明外,转载请注明出处!</div>
+        </div>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
+  import Navbar from "../layout/components/Navbar";
+  import {getUserByUserId} from '@/api/users';
   export default {
-    name: 'article'
+    name: 'article',
+    data(){
+      return{
+        article:JSON.parse(this.$route.query.article),
+        userinfo:"",
+      }
+    },methods:{
+     getUser(){
+       getUserByUserId(this.article.userId).then(res=>{
+         this.userinfo=res.data
+       })
+     }
+    },created() {
+      this.getUser()
+    },
+    components:{
+      Navbar
+    }
   }
 </script>
 
 <style scoped>
   #artcle-info {
     padding: 20px;
+    background-image: url(../../assets/bg1.jpg);
     margin-bottom: 40px;
   }
 

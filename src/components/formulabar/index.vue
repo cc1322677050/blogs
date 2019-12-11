@@ -16,6 +16,10 @@
       :visible.sync="dialogVisible"
       width="40%">
       <el-input type="text" v-model="article.articleTitle" :value="article.articleTitle" placeholder="请为文章设置一个标题" required="true"></el-input>
+      <el-divider content-position="left">请简要描述文章内容</el-divider>
+      <textarea style="width: 100%;height: 150px"></textarea>
+      <el-divider content-position="left">请为文章设置封面</el-divider>
+
       <el-divider content-position="left">请为文章设置分类</el-divider>
         <el-tree
           :data="treedata"
@@ -53,6 +57,9 @@
 
 <script>
   import axios from 'axios'
+  import {getLablePage} from '@/api/lables'
+  import {getSortTree} from '@/api/sorts'
+  import {savaArticle} from '@/api/article'
   export default {
     data(){
       return{
@@ -116,6 +123,8 @@
         dialogVisible:false,
         article:{
           userId:this.$store.getters.userId,
+          description:"",
+          mark:"",
           articleTitle:"",
           articleContent:"",
           articleMarkdown:"",
@@ -126,42 +135,28 @@
     },
     methods:{
       getTreeSort() {
-        axios({
-          headers: {
-            Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
-          },
-          url: process.env.BASE_API + "/sort/tree",
-          method: 'GET',
-        }).then(res=>{
-          this.treedata=res.data.data
+        getSortTree().then(res=>{
+          this.treedata=res.data
         })
       },
       getLables(){
-        axios({
-          headers: {
-            Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
-          },
-          url: process.env.BASE_API + "/lable/list",
-          method: 'POST',
-          params:this.listQuery,
-        }).then(res=>{
-          res=res.data;
+        getLablePage(this.listQuery).then(res=>{
           this.lables=res.data.records;
-          this.list = res.data.list;
           this.total = res.data.total;
         })
       },
-      saveArticle(){
-        axios({
-            headers: {
-              Authorization: this.token   // 我上传的时候请求头需要带上token 验证，不需要的删除就好
-            },
-            url: process.env.BASE_API + "/article/save",
-            method: 'POST',
-            data:this.article,
-            }).then(res=>{
-              console.log(res.data)
-          })
+      saveArticles(){
+        savaArticle(this.article).then(res=>{
+          if (res.code===200){
+            this.$alert('save successfully!', 'info', {
+              confirmButtonText: 'ok'
+            })
+          }else {
+            this.$alert('fail to save!', 'error', {
+              confirmButtonText: 'ok'
+             })
+          }
+        })
       },
       handleEditorImgAdd (pos, f) {
         let formdata = new FormData();
@@ -211,7 +206,6 @@
         this.getLables();
       },
       handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
         this.getLables();
       },
@@ -229,7 +223,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.saveArticle()
+          this.saveArticles()
           this.dialogVisible = false
           console.log(this.article)
           this.$message({
@@ -246,6 +240,8 @@
     },created() {
       this.getTreeSort();
       this.getLables();
+    },components:{
+
     }
   }
 </script>
