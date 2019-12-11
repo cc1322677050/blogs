@@ -8,7 +8,7 @@
             <el-row class="art-info d-flex align-items-center justify-content-start">
               <div class="art-time"><i class="el-icon-time"></i>：{{item.articleDate}}</div>
               <div class="d-flex align-items-center"><img class="tag" src="@/assets/tag.png" />：
-                <el-tag size="mini" v-for="(labes,indexs) in item.labels"  :key="index" style="margin-left: 2px">{{labes.labelName}}</el-tag>
+                <el-tag size="mini" :type="types[indexs]" v-for="(labes,indexs) in item.labels"  :key="indexs" style="margin-left: 2px">{{labes.labelName}}</el-tag>
               </div>
             </el-row>
             <el-row class="art-body">
@@ -57,6 +57,7 @@
       return{
         total:0,
         articleList:[],
+        types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger"],
         listQuery: {
           pageNum: 1,
           pageSize: 10
@@ -65,7 +66,6 @@
     },methods: {
       pageArticle(){
         fetListArticle(this.listQuery).then(response=>{
-          console.log(response.data)
           this.articleList=response.data.records;
           this.list = response.data.list;
           this.total = response.data.total;

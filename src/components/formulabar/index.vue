@@ -1,7 +1,7 @@
 <template>
   <div>
     <mavon-editor v-model="markdownEditor.text" @save="saveDoc"
-                  :toolbars="toolbars"
+                  :toolbars="toolbars" style="height: 1000px"
                   :ishljs="true" fontSize="15px" placeholder="欢迎来到程某开发的个人博客网站"
                   codeStyle="darcula" @imgAdd="handleEditorImgAdd"  @imgDel="handleEditorImgDel">
     </mavon-editor>
@@ -16,10 +16,10 @@
       :visible.sync="dialogVisible"
       width="40%">
       <el-input type="text" v-model="article.articleTitle" :value="article.articleTitle" placeholder="请为文章设置一个标题" required="true"></el-input>
-      <el-divider content-position="left">请简要描述文章内容</el-divider>
-      <textarea style="width: 100%;height: 150px"></textarea>
       <el-divider content-position="left">请为文章设置封面</el-divider>
-
+      <updataImage  v-on:imageurl="listenToImageUrl"></updataImage>
+      <el-divider content-position="left">请简要描述文章内容</el-divider>
+      <textarea style="width: 100%;height: 150px" v-model="article.description"></textarea>
       <el-divider content-position="left">请为文章设置分类</el-divider>
         <el-tree
           :data="treedata"
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+  import updataImage from '@/components/upload/updataImage'
   import axios from 'axios'
   import {getLablePage} from '@/api/lables'
   import {getSortTree} from '@/api/sorts'
@@ -124,7 +125,7 @@
         article:{
           userId:this.$store.getters.userId,
           description:"",
-          mark:"",
+          mark:require("@/assets/}$KDC(@K)G82A2_8T@72M~T.png"),
           articleTitle:"",
           articleContent:"",
           articleMarkdown:"",
@@ -134,6 +135,9 @@
       }
     },
     methods:{
+      listenToImageUrl($event){
+          this.article.mark=$event
+      },
       getTreeSort() {
         getSortTree().then(res=>{
           this.treedata=res.data
@@ -241,7 +245,7 @@
       this.getTreeSort();
       this.getLables();
     },components:{
-
+      updataImage
     }
   }
 </script>

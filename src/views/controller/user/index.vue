@@ -3,7 +3,7 @@
     <div style="width: 100%;">
       <el-form :model="userInfoForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item style="float: left;width: 50%;margin-top: 4%">
-            <UpdataProFilePhoto v-on:imageurl="listenToMyBoy"  v-model="userInfoForm.userProfilePhoto"></UpdataProFilePhoto>
+            <UpdataProFilePhoto v-on:imageurl="listenToImageUrl"  v-model="userInfoForm.userProfilePhoto"></UpdataProFilePhoto>
         </el-form-item>
         <div style="float: right;width: 50%;margin-top: 6%">
           <el-form-item label="用户名：" prop="name" style="width: 25%" >
@@ -96,7 +96,7 @@
           }
       },
       methods:{
-        listenToMyBoy($event){
+        listenToImageUrl($event){
           this.userInfoForm.userProfilePhoto=$event
         },
         submitForm() {

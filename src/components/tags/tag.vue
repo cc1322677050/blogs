@@ -6,32 +6,61 @@
 				<span>标签</span>
 			</div>
 			<div class="text item">
-				<el-tag size="mini" class="tag-item" @click="tag('Java')">Java[12]</el-tag>
-				<el-tag size="mini" class="tag-item" type="success" @click="tag('SpringBoot')">SpringBoot[8]</el-tag>
-				<el-tag size="mini" class="tag-item" type="info" @click="tag('HTML')">HTML[8]</el-tag>
-				<el-tag size="mini" class="tag-item" type="warning" @click="tag('Mysql')">Mysql[5]</el-tag>
-				<el-tag size="mini" class="tag-item" type="danger" @click="tag('Vue')">Vue[3]</el-tag>
-				<el-tag size="mini" class="tag-item" type="info" @click="tag('jQuery')">jQuery[6]</el-tag>
-				<el-tag size="mini" class="tag-item" type="success" @click="tag('SpringCloud')">SpringCloud[9]</el-tag>
+		    <el-tag size="mini" class="tag-item"   v-for="(item,index) in labes" :key="index" :type="types[index]" @click="tag(item.labelId)">{{item.labelName}}[{{item.count}}]</el-tag>
 			</div>
+      <div style="text-align: center">
+        <el-pagination
+          small
+          layout="prev, pager, next,total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-size="listQuery.pageSize"
+          :current-page.sync="listQuery.pageNum"
+          :total="total">
+        </el-pagination>
+      </div>
 		</el-card>
 	</div>
 </template>
 
 <script>
+  import {getLablePage} from '@/api/lables'
 	export default {
 		name: 'tag',
-		methods: {
+      data(){
+		    return{
+          labes:[],
+          listQuery: {
+              pageNum: 1,
+              pageSize: 10
+          },
+          total:0,
+          types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger",]
+        }
+      },
+    methods: {
 			tag(name) {
-				this.$router.push({
-					name: 'tag',
-					params: {
-						'name': name
-					}
-				});
-			}
-		}
-	}
+			    console.log(name)
+			},
+      handleCurrentChange(val) {
+          this.listQuery.pageNum = val;
+          this.fetchLableList();
+      },
+      handleSizeChange(val) {
+          this.listQuery.pageSize = val;
+          this.fetchLableList();
+      },
+      fetchLableList(){
+        getLablePage(this.listQuery).then(res=>{
+            this.labes=res.data.records;
+            this.total = res.data.total;
+        })
+      }
+		},
+    created() {
+      this.fetchLableList()
+    }
+  }
 </script>
 
 <style scoped>
@@ -51,6 +80,7 @@
 	}
 
 	.tag-item {
+    margin-top: 5px;
 		margin-right: 10px;
 	}
 </style>
