@@ -78,7 +78,6 @@
 		height: 20px;
 		margin-right: 10px;
 	}
-
 	.tag-item {
     margin-top: 5px;
 		margin-right: 10px;

@@ -13,6 +13,8 @@
       data(){
         return{
           markdownEditor:{
+            userId:"",
+            userArtcileid:"",
             text:"",
             default:""
           },

@@ -8,21 +8,21 @@
             <div class="total-frame">
               <img src="../../assets/file/file.png" class="total-icon"></img>
               <div class="total-title">发表文章数</div>
-              <div class="total-value">200</div>
+              <div class="total-value">{{userArticleCount}}<span>篇</span></div>
             </div>
           </el-col>
           <el-col :span="6">
             <div class="total-frame">
               <img src="../../assets/file/good.png" class="total-icon">
               <div class="total-title">获得的点赞数</div>
-              <div class="total-value">￥5000.00</div>
+              <div class="total-value">5000</div>
             </div>
           </el-col>
           <el-col :span="6">
             <div class="total-frame">
               <img src="../../assets/file/common.png" class="total-icon">
               <div class="total-title">收到的评论数</div>
-              <div class="total-value">￥5000.00</div>
+              <div class="total-value">5000</div>
             </div>
           </el-col>
         </el-row>
@@ -30,6 +30,43 @@
       <div class="un-handle-layout">
         <div class="layout-title">我最近发表的文章</div>
         <div class="un-handle-content">
+          <el-row class="art-item" v-for="(item,index) in articleList" :key="index">
+            <el-card shadow="hover">
+              <h5><router-link :to="{path:'/article',query:{article:JSON.stringify(item)}}" tag="span" class="art-title">{{item.articleTitle}}</router-link></h5>
+              <el-row class="art-info d-flex align-items-center justify-content-start">
+                <div class="art-time"><i class="el-icon-time"></i>：{{item.articleDate}}</div>
+                <div class="d-flex align-items-center"><img class="tag" src="@/assets/tag.png" />：
+                  <el-tag size="mini" :type="types[indexs]" v-for="(labes,indexs) in item.labels"  :key="indexs" style="margin-left: 2px">{{labes.labelName}}</el-tag>
+                </div>
+              </el-row>
+              <el-row class="art-body">
+                <div class="side-img hidden-sm-and-down"><img class="art-banner" :src="item.mark"></div>
+                <div class="side-abstract">
+                  <div class="art-abstract">
+                    {{item.description}}
+                  </div>
+                  <div class="art-more">
+                    <div>
+                      <el-button plain>修改文章</el-button>
+                      <el-button plain>删除文章</el-button>
+                    </div>
+                    <div class="view"><i class="el-icon-view"></i>{{item.articleViews}}</div>
+                  </div>
+                </div>
+              </el-row>
+            </el-card>
+          </el-row>
+          <div class="block pagination">
+            <el-pagination
+              background
+              layout="prev, pager, next,total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :page-size="listQuery.pageSize"
+              :current-page.sync="listQuery.pageNum"
+              :total="total">
+            </el-pagination>
+          </div>
         </div>
       </div>
       <div class="overview-layout">
@@ -54,47 +91,44 @@
 </template>
 
 <script>
-  import UpdataProFilePhoto from "@/components/Upload/UpdataProFilePhoto"
+  import {fetListArticle} from "@/api/article"
+  import {getCount} from '@/api/home'
+
   export default {
     data() {
       return {
-        ruleForm: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+        articleList:[],
+        total:0,
+        userArticleCount:0,
+        types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger"],
+        listQuery: {
+          pageNum: 1,
+          pageSize: 2,
+          userId:this.$store.getters.userId
         },
-        rules: {
-          name: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ],
-          region: [
-            { required: true, message: '请选择活动区域', trigger: 'change' }
-          ],
-          date1: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          ],
-          date2: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
-          ],
-          desc: [
-            { required: true, message: '请填写活动形式', trigger: 'blur' }
-          ]
-        }
       };
     },
     methods: {
+      getUserCount(){
+        getCount(this.$store.getters.userId).then(res => {
+          this.userArticleCount=res.data.articleCount
+        })
+      },
+      handleCurrentChange(val) {
+        this.listQuery.pageNum = val;
+        this.fethchListByUserId();
+      },
+      handleSizeChange(val) {
+        this.listQuery.pageNum = 1;
+        this.listQuery.pageSize = val;
+        this.fethchListByUserId();
+      },
+      fethchListByUserId(){
+        fetListArticle(this.listQuery).then(res=>{
+          this.articleList=res.data.records
+          this.total = res.data.total;
+        })
+      },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -108,9 +142,9 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       }
-    },
-    components:{
-      UpdataProFilePhoto
+    },created() {
+      this.getUserCount()
+      this.fethchListByUserId()
     }
   }
 </script>
@@ -234,5 +268,90 @@
   .address-content{
     padding: 20px;
     font-size: 18px
+  }
+
+  #side .item {
+    margin-bottom: 30px;
+  }
+
+  .art-item {
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .art-item .star {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  img.tag {
+    width: 16px;
+    height: 16px;
+  }
+
+  .art-title {
+    border-left: 3px solid #F56C6C;
+    padding-left: 5px;
+    cursor: pointer;
+  }
+
+  .art-title:hover {
+    padding-left: 10px;
+    color: #409EFF;
+  }
+
+  .art-time {
+    margin-right: 20px;
+  }
+
+  .art-body {
+    display: flex;
+    padding: 10px 0;
+  }
+
+  .side-img {
+    height: 150px;
+    width: 270px;
+    overflow: hidden;
+    margin-right: 10px;
+  }
+
+  img.art-banner {
+    width: 100%;
+    height: 100%;
+    transition: all 0.6s;
+  }
+
+  img.art-banner:hover {
+    transform: scale(1.4);
+  }
+
+  .side-abstract {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .art-abstract {
+    flex: 1;
+    color: #aaa;
+  }
+
+  .art-more {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .art-more .view {
+    color: #aaa;
+  }
+  h5{
+    font-size: 18px;
+  }
+  .pagination {
+    background-color: #F9F9F9;
   }
 </style>

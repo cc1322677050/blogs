@@ -42,6 +42,9 @@
       </el-col>
       <el-col :span="6" class="hidden-sm-and-down" id="side">
         <div class="item">
+          <sortsTree></sortsTree>
+        </div>
+        <div class="item">
           <tags v-on:tag="getTag"></tags>
         </div>
       </el-col>
@@ -53,6 +56,7 @@
   import tags from "@/components/tags/tag"
   import {fetListArticle} from "@/api/article"
   import {getArticleByLableId} from "@/api/lables"
+  import sortsTree from  '@/components/sortsTree/'
   export default {
     data(){
       return{
@@ -70,7 +74,6 @@
           this.listQuery.pageSize=10;
           getArticleByLableId($event,this.listQuery).then(res=>{
               this.articleList=res.data.records;
-              this.list = res.data.list;
               this.total = res.data.total;
           })
       },
@@ -95,13 +98,18 @@
       this.pageArticle()
     },
     components: {
-      tags
+      tags,
+      sortsTree
     }
   }
 </script>
 
 
 <style>
+  #side .item {
+    margin-bottom: 30px;
+  }
+
   .art-item {
     margin-bottom: 30px;
     position: relative;
