@@ -6,29 +6,22 @@
         <el-row :gutter="20">
           <el-col :span="6">
             <div class="total-frame">
-              <img :src="img_home_order" class="total-icon">
+              <img src="../../assets/file/file.png" class="total-icon"></img>
               <div class="total-title">发表文章数</div>
               <div class="total-value">200</div>
             </div>
           </el-col>
           <el-col :span="6">
             <div class="total-frame">
-              <img :src="img_home_today_amount" class="total-icon">
+              <img src="../../assets/file/good.png" class="total-icon">
               <div class="total-title">获得的点赞数</div>
               <div class="total-value">￥5000.00</div>
             </div>
           </el-col>
           <el-col :span="6">
             <div class="total-frame">
-              <img :src="img_home_yesterday_amount" class="total-icon">
+              <img src="../../assets/file/common.png" class="total-icon">
               <div class="total-title">收到的评论数</div>
-              <div class="total-value">￥5000.00</div>
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="total-frame">
-              <img :src="img_home_yesterday_amount" class="total-icon">
-              <div class="total-title">好友申请</div>
               <div class="total-value">￥5000.00</div>
             </div>
           </el-col>
@@ -37,7 +30,6 @@
       <div class="un-handle-layout">
         <div class="layout-title">我最近发表的文章</div>
         <div class="un-handle-content">
-
         </div>
       </div>
       <div class="overview-layout">

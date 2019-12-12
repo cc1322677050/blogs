@@ -42,7 +42,7 @@
       </el-col>
       <el-col :span="6" class="hidden-sm-and-down" id="side">
         <div class="item">
-          <tags></tags>
+          <tags v-on:tag="getTag"></tags>
         </div>
       </el-col>
     </el-row>
@@ -52,6 +52,7 @@
 <script>
   import tags from "@/components/tags/tag"
   import {fetListArticle} from "@/api/article"
+  import {getArticleByLableId} from "@/api/lables"
   export default {
     data(){
       return{
@@ -64,6 +65,15 @@
         },
       }
     },methods: {
+      getTag($event){
+          this.listQuery.pageNum=1;
+          this.listQuery.pageSize=10;
+          getArticleByLableId($event,this.listQuery).then(res=>{
+              this.articleList=res.data.records;
+              this.list = res.data.list;
+              this.total = res.data.total;
+          })
+      },
       pageArticle(){
         fetListArticle(this.listQuery).then(response=>{
           this.articleList=response.data.records;

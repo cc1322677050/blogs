@@ -35,12 +35,12 @@
               pageSize: 10
           },
           total:0,
-          types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger",]
+          types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger"]
         }
       },
     methods: {
 			tag(name) {
-			    console.log(name)
+          this.$emit("tag",name);//自定义事件  传递值“子向父组件传值”
 			},
       handleCurrentChange(val) {
           this.listQuery.pageNum = val;

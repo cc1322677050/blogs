@@ -11,6 +11,7 @@ import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 import '@/permission' // permission control
 
+
 import mavonEditor from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 
