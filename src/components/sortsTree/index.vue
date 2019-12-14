@@ -15,13 +15,16 @@
               <el-submenu v-if="itemChild.children && itemChild.children.length"  :index="itemChild.sortId.toString()" :key="index1">
                 <template  slot="title"><img style="height: 20px;width: 20px;margin-right: 10px" :src="itemChild.icon">{{itemChild.sortName}}</template>
                 <!-- 三级菜单 -->
-                <el-menu-item v-for="(itemChild_Child,index2) in itemChild.children" :index="itemChild_Child.sortId.toString()" :key="index2">
+                <el-menu-item v-for="(itemChild_Child,index2) in itemChild.children" :index="itemChild_Child.sortId.toString()" :key="index2" @click="selectSorts(itemChild_Child.sortId)">
                 <span slot="title"><img style="height: 20px;width: 20px;margin-right: 10px" :src="itemChild_Child.icon">{{itemChild_Child.sortName}}</span></el-menu-item>
               </el-submenu>
-              <el-menu-item v-else  :index="itemChild.sortId.toString()"  :key="itemChild.sortId"><img style="height: 20px;width: 20px;margin-right: 10px" :src="itemChild.icon"><span slot="title">{{itemChild.sortName}}</span></el-menu-item>
+              <el-menu-item v-else  :index="itemChild.sortId.toString()"  :key="itemChild.sortId" @click="selectSorts(itemChild.sortId)" ><img style="height: 20px;width: 20px;margin-right: 10px" :src="itemChild.icon"><span slot="title">{{itemChild.sortName}}</span></el-menu-item>
             </template>
           </el-submenu>
-          <el-menu-item v-else   :index="item.sortId.toString()" :key="item.sortId"><span slot="title"><img style="height: 20px;width: 20px;margin-right: 10px" :src="item.icon">{{item.sortName}}</span></el-menu-item>
+          <el-menu-item v-else   :index="item.sortId.toString()" :key="item.sortId"  @click="selectSorts(item.sortId)"><span slot="title"><img style="height: 20px;width: 20px;margin-right: 10px" :src="item.icon">{{item.sortName}}</span></el-menu-item>
+        </template>
+        <template>
+          <el-menu-item   @click="goHome()"><span slot="title"><img style="height: 20px;width: 20px;margin-right: 10px" >返回</span></el-menu-item>
         </template>
       </el-menu>
     </el-card>
@@ -34,12 +37,25 @@
       return{
         //这里的数据我就模拟一个了
         menuList:[],
+        menuSorts:[]
       }
     },
     methods:{
+      selectSorts(id){
+        if (this.menuSorts.length>0){
+          this.menuSorts=[];
+          this.menuSorts.push(id);
+        }else {
+          this.menuSorts.push(id);
+        }
+        this.$emit('sorts',this.menuSorts)
+      },
+      goHome(){
+        this.menuSorts=[]
+        this.$emit('sorts',this.menuSorts)
+      },
       getTree(){
         getSortTree().then(res=>{
-          console.log(res.data)
           this.menuList=res.data
         })
       }

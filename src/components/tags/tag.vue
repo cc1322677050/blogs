@@ -6,8 +6,14 @@
 				<span>标签</span>
 			</div>
 			<div class="text item">
-		    <el-tag size="mini" class="tag-item"   v-for="(item,index) in labes" :key="index" :type="types[index]" @click="tag(item.labelId)">{{item.labelName}}[{{item.count}}]</el-tag>
-			</div>
+        <el-tag size="mini" class="tag-item"  v-for="(item,index) in labes" :key="index" :type="types[index]" @click="tag(item)">{{item.labelName}}[{{item.count}}]</el-tag>
+        <el-tag size="mini" class="tag-item"  @click="sendMessage()">开始搜索</el-tag>
+        <el-tag size="mini" class="tag-item"  @click="flush()">重新赛选</el-tag>
+      </div>
+      <el-divider content-position="left">当前已选中</el-divider>
+      <div>
+        <el-tag size="mini" class="tag-item" v-for="(item,index) in chickedlables" :key="index">{{item.labelName}}</el-tag>
+      </div>
       <div style="text-align: center">
         <el-pagination
           small
@@ -30,6 +36,8 @@
       data(){
 		    return{
           labes:[],
+          chickedlables:[],
+          labesId:[],
           listQuery: {
               pageNum: 1,
               pageSize: 10
@@ -39,24 +47,46 @@
         }
       },
     methods: {
-			tag(name) {
-          this.$emit("tag",name);//自定义事件  传递值“子向父组件传值”
-			},
+      tag(item) {
+        if (this.chickedlables.length<5){
+          for(var i=0;i<this.chickedlables.length;i++){
+            if (item.labelId===this.chickedlables[i].labelId){
+              this.$alert("Duplicate values cannot be added!","info",{
+                confirmButtonText: 'ok'
+              })
+              return
+            }
+          }
+          this.chickedlables.push(item);
+        }else {
+          this.$alert("Maximum 5 labels!","info",{
+            confirmButtonText: 'ok'
+          })
+        }
+        this.labesId.push(item.labelId)
+      },
+      sendMessage(){
+        this.$emit('tag',this.labesId)
+      },
+      flush(){
+        this.labesId=[];
+        this.chickedlables=[];
+      },
       handleCurrentChange(val) {
-          this.listQuery.pageNum = val;
-          this.fetchLableList();
+        this.listQuery.pageNum = val;
+        this.fetchLableList();
       },
       handleSizeChange(val) {
-          this.listQuery.pageSize = val;
-          this.fetchLableList();
+        this.listQuery.pageSize = val;
+        this.fetchLableList();
       },
-      fetchLableList(){
-        getLablePage(this.listQuery).then(res=>{
-            this.labes=res.data.records;
-            this.total = res.data.total;
+      fetchLableList() {
+        getLablePage(this.listQuery).then(res => {
+          this.labes = res.data.records;
+          this.total = res.data.total;
         })
-      }
-		},
+      },
+    },
     created() {
       this.fetchLableList()
     }
@@ -68,11 +98,9 @@
 		color: #409EFF;
 		cursor: pointer;
 	}
-
 	.box-card span {
 		font-weight: bold;
 	}
-
 	.card-icon {
 		width: 20px;
 		height: 20px;
@@ -82,4 +110,8 @@
     margin-top: 5px;
 		margin-right: 10px;
 	}
+  .tag-item:active{
+    background-color: #aae1ee;
+  }
+
 </style>

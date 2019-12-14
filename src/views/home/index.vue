@@ -42,7 +42,7 @@
       </el-col>
       <el-col :span="6" class="hidden-sm-and-down" id="side">
         <div class="item">
-          <sortsTree></sortsTree>
+          <sortsTree v-on:sorts="getSorts"></sortsTree>
         </div>
         <div class="item">
           <tags v-on:tag="getTag"></tags>
@@ -55,7 +55,6 @@
 <script>
   import tags from "@/components/tags/tag"
   import {fetListArticle} from "@/api/article"
-  import {getArticleByLableId} from "@/api/lables"
   import sortsTree from  '@/components/sortsTree/'
   export default {
     data(){
@@ -65,17 +64,19 @@
         types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger"],
         listQuery: {
           pageNum: 1,
-          pageSize: 10
+          pageSize: 5,
+          labelsLists:[],
+          sortsList:[]
         },
       }
     },methods: {
+      getSorts($event){
+        this.listQuery.sortsList=$event
+        this.pageArticle();
+      },
       getTag($event){
-          this.listQuery.pageNum=1;
-          this.listQuery.pageSize=10;
-          getArticleByLableId($event,this.listQuery).then(res=>{
-              this.articleList=res.data.records;
-              this.total = res.data.total;
-          })
+          this.listQuery.labelsLists=$event
+          this.pageArticle();
       },
       pageArticle(){
         fetListArticle(this.listQuery).then(response=>{
@@ -86,12 +87,12 @@
       },
       handleCurrentChange(val) {
         this.listQuery.pageNum = val;
-        this.getLables();
+        this.pageArticle();
       },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
         this.listQuery.pageSize = val;
-        this.getLables();
+        this.pageArticle();
       },
     },
     created() {

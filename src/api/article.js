@@ -13,6 +13,23 @@ export function fetListArticle(params) {
   return request({
     url:"/article/list",
     method:"POST",
-    params:params
+    data: params
+  })
+}
+
+export function addViews(articleId) {
+  return request({
+    url:"/article/views",
+    method:"POST",
+    params:{
+      articleId:articleId
+    }
+  })
+}
+
+export function deleteArticle(articleId) {
+  return request({
+    url:"/article/delete/"+articleId,
+    method:"POST",
   })
 }

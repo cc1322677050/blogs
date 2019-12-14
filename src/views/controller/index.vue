@@ -48,7 +48,7 @@
                   <div class="art-more">
                     <div>
                       <el-button plain>修改文章</el-button>
-                      <el-button plain>删除文章</el-button>
+                      <el-button @click="deleteArticle(item.articleId)" plain>删除文章</el-button>
                     </div>
                     <div class="view"><i class="el-icon-view"></i>{{item.articleViews}}</div>
                   </div>
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-  import {fetListArticle} from "@/api/article"
+  import {fetListArticle,deleteArticle} from "@/api/article"
   import {getCount} from '@/api/home'
 
   export default {
@@ -109,6 +109,19 @@
       };
     },
     methods: {
+      deleteArticle(articleId){
+        deleteArticle(articleId).then(res=>{
+            if (res.code===200){
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+              this.fethchListByUserId();
+            }else {
+              this.$message.error('删除失败');
+            }
+        })
+      },
       getUserCount(){
         getCount(this.$store.getters.userId).then(res => {
           this.userArticleCount=res.data.articleCount

@@ -58,6 +58,7 @@
 <script>
   import updataImage from '@/components/upload/updataImage'
   import axios from 'axios'
+  import {beforeAvatarUpload} from '@/utils/imageSize'
   import {getLablePage} from '@/api/lables'
   import {getSortTree} from '@/api/sorts'
   import {savaArticle} from '@/api/article'
@@ -152,19 +153,18 @@
       saveArticles(){
         savaArticle(this.article).then(res=>{
           if (res.code===200){
-            this.$alert('save successfully!', 'info', {
-              confirmButtonText: 'ok'
-            })
+            this.$message.success('上传成功!');
           }else {
-            this.$alert('fail to save!', 'error', {
-              confirmButtonText: 'ok'
-             })
+            this.$message.error('保存失败!');
           }
         })
       },
       handleEditorImgAdd (pos, f) {
         let formdata = new FormData();
         formdata.append('image', f)
+        if(!beforeAvatarUpload(f)){
+          return
+        }
         this.imgFile[pos] = f;
         this.image.dialogVisible=true;
         axios({
@@ -179,7 +179,7 @@
             }}).then(res => {
               if (res.data.code === 200) {
                 this.image.dialogVisible=false;
-                console.log("上传成功")
+                this.$message.success('图片上传成功');
                 let url = res.data.data
                 let name = f.name
                 if (name.includes('-')) {
@@ -198,8 +198,9 @@
                   this.markdownEditor.text = insertStr(str, index, nStr)
                 }
               } else {
-                console.log("error")
-            }
+                this.image.dialogVisible=false;
+                this.$message.error('图片上传失败!');
+              }
         })
       },
       handleCheckChange(){

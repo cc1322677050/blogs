@@ -37,20 +37,28 @@
 <script>
   import Navbar from "../layout/components/Navbar";
   import {getUserByUserId} from '@/api/users';
+  import {addViews} from '@/api/article'
   export default {
     name: 'article',
     data(){
       return{
         article:JSON.parse(this.$route.query.article),
         userinfo:"",
+
       }
     },methods:{
+      addArticleViews(){
+        addViews(this.article.articleId).then(res=>{
+
+        })
+      },
      getUser(){
        getUserByUserId(this.article.userId).then(res=>{
          this.userinfo=res.data
        })
      }
     },created() {
+      this.addArticleViews()
       this.getUser()
     },
     components:{
