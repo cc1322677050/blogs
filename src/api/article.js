@@ -33,3 +33,11 @@ export function deleteArticle(articleId) {
     method:"POST",
   })
 }
+
+export function updataArticle(data) {
+  return request({
+    url:"/article/updata",
+    method:"POST",
+    data: data
+  })
+}

@@ -47,8 +47,19 @@
                   </div>
                   <div class="art-more">
                     <div>
-                      <el-button plain>修改文章</el-button>
-                      <el-button @click="deleteArticle(item.articleId)" plain>删除文章</el-button>
+                      <router-link :to="{path:'/updata',query:{article:JSON.stringify(item)}}" tag="span">
+                        <el-button plain>修改文章</el-button>
+                      </router-link>
+                      <el-popover
+                        placement="top"
+                        v-model="visible">
+                        <p>你确定要删除这篇文章么？</p>
+                        <div style="text-align: right; margin: 0">
+                          <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                          <el-button type="primary" size="mini" @click="deleteArticle(item.articleId)" >确认删除</el-button>
+                        </div>
+                        <el-button slot="reference" plain>删除文章</el-button>
+                      </el-popover>
                     </div>
                     <div class="view"><i class="el-icon-view"></i>{{item.articleViews}}</div>
                   </div>
@@ -97,6 +108,7 @@
   export default {
     data() {
       return {
+        visible:false,
         articleList:[],
         total:0,
         userArticleCount:0,
@@ -112,10 +124,7 @@
       deleteArticle(articleId){
         deleteArticle(articleId).then(res=>{
             if (res.code===200){
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
+              this.$message.success('删除成功');
               this.fethchListByUserId();
             }else {
               this.$message.error('删除失败');

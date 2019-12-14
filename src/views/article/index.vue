@@ -49,7 +49,6 @@
     },methods:{
       addArticleViews(){
         addViews(this.article.articleId).then(res=>{
-
         })
       },
      getUser(){

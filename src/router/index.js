@@ -8,6 +8,7 @@ export const constantRouterMap = [
   {path: '/register', component:() => import('@/views/register/index'), hidden:true},
   {path:'/write',component:()=>import("@/views/blog/index"),hidden:true},
   {path:'/article',component:()=>import("@/views/article/index"),hidden: true},
+  {path:'/updata',component:()=>import("@/views/article/updata/index"),hidden:true},
   {
     path: '',
     component: Layout,
