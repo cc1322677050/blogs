@@ -112,24 +112,23 @@
               //验证码错误
               if (this.validcode.toLowerCase()!=this.RegisterForm.validcode.toLowerCase()) {
                   this.$refs.code.createdCode()
-                  this.$alert('Verification code error!', 'error', {
-                      confirmButtonText: 'ok'
-                  })
+                  this.$message.error("Verification code error!")
+                  //刷新验证码
                   this.$refs.code.refreshCode()
                   this.logining=false;
               }
               register(this.RegisterForm.username,this.RegisterForm.pass).then(response=>{
                   this.logining=false;
                   if (response.code===200){
-                      this.$alert('Registered Successfully!', 'info', {
-                          confirmButtonText: 'ok'
-                      })
-                      this.$router.push({path: '/login'})
+                    this.$message.success('Registered Successfully!');
+                    this.$router.push({path: '/login'})
+                  }else {
+                    this.$message.error('Registration Failed !');
                   }
               })
             } else {
               this.logining=false;
-              console.log("error submit!!");
+            this.$message.error("error submit!!")
               return false;
           }
         })

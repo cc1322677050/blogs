@@ -28,15 +28,27 @@ service.interceptors.request.use(config => {
 })
 
 service.interceptors.response.use(response =>{
-  const res=response;
+  const res=response.data;
   // console.log(res)
   //若状态码！=200直接返回错误
-  if(res.status!==200){
-    Message({
-      message: res.status,
-      type: 'error',
-      duration: 3 * 1000
-    })
+  if(res.code!==200){
+    // Message({
+    //   message: res.code,
+    //   type: 'error',
+    //   duration: 3 * 1000
+    // })
+    // 401:未登录;
+    // if (res.code === 401||res.code === 403) {
+    //   MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+    //     confirmButtonText: '重新登录',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     store.dispatch('FedLogOut').then(() => {
+    //       location.reload()// 为了重新实例化vue-router对象 避免bug
+    //     })
+    //   })
+    // }
     return Promise.reject('error')
   }else {
     return response.data

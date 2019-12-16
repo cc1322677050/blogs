@@ -103,11 +103,9 @@
           if(valid){
             this.logining = true;
             if (this.validcode.toLowerCase()!=this.ruleForm.validcode.toLowerCase()){
-              this.logining = false
-              this.$refs.code.refreshCode()
-              this.$alert('Verification code error!', 'error', {
-                confirmButtonText: 'ok'
-              })
+              this.logining = false;
+              this.$refs.code.refreshCode();
+              this.$message.error('Verification code error!');
               }else {
               this.$store.dispatch('Login', this.ruleForm).then(() => {
                 this.logining = false;
@@ -122,16 +120,13 @@
                 }
                 this.$router.push({path: '/home'});
               }).catch(() => {
-                this.$refs.code.refreshCode()
-                this.logining = false
-                this.$alert('username or password  wrong!', 'error', {
-                  confirmButtonText: 'ok'
-                })
+                this.$refs.code.refreshCode();
+                this.logining = false;
+                this.$message.error('Username or Password  wrong!');
               })
-
             }
           }else{
-            console.log('error submit!');
+            this.$message.error('error submit!');
             return false;
           }
         })

@@ -71,7 +71,6 @@ const user= {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const data = response.data;
-          console.log(data)
           commit('SET_USERID', data.userId);
           commit('SET_NAME', data.userName);
           commit('SET_Email',data.userEmail);
