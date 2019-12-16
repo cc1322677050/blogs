@@ -30,6 +30,7 @@
           <div class="item">版权声明：本博客所有文章除特别声明外,转载请注明出处!</div>
         </div>
       </el-col>
+
     </el-row>
   </div>
 </template>
@@ -44,7 +45,7 @@
       return{
         article:JSON.parse(this.$route.query.article),
         userinfo:"",
-
+        value: null
       }
     },methods:{
       addArticleViews(){

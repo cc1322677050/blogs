@@ -4,7 +4,7 @@
       <el-col :span="16">
         <el-row class="art-item" v-for="(item,index) in articleList" :key="index">
           <el-card shadow="hover">
-            <h5><router-link :to="{path:'/article',query:{article:JSON.stringify(item)}}" tag="span" class="art-title">{{item.articleTitle}}</router-link></h5>
+            <h5><router-link :to="{path:'/article',query:{article:JSON.stringify(item)}}" tag="span" class="art-title">{{item.articleTitle}}</router-link> </h5>
             <el-row class="art-info d-flex align-items-center justify-content-start">
               <div class="art-time"><i class="el-icon-time"></i>：{{item.articleDate}}</div>
               <div class="d-flex align-items-center"><img class="tag" src="@/assets/tag.png" />：
@@ -21,7 +21,12 @@
                   <router-link :to="{path:'/article',query:{article:JSON.stringify(item)}}" tag="span">
                     <el-button plain>阅读全文</el-button>
                   </router-link>
-                  <div class="view"><i class="el-icon-view"></i>{{item.articleViews}}</div>
+                  <div class="view" style="font-size: 18px">
+                      <a class="el-icon-star-off" :model="item.articleLikeUsersId"  v-if="userLike(item.articleLikeUsersId)" @click="likethis(index)">{{item.articleLikeCount}}</a>
+                      <a v-else class="el-icon-star-on"   @click="dislike(index)"> {{item.articleLikeCount}}</a>
+                      <el-divider direction="vertical"></el-divider>
+                      <i class="el-icon-view"></i> {{item.articleViews}}
+                  </div>
                 </div>
               </div>
             </el-row>
@@ -49,16 +54,18 @@
         </div>
       </el-col>
     </el-row>
+
   </div>
 </template>
 
 <script>
   import tags from "@/components/tags/tag"
-  import {fetListArticle} from "@/api/article"
+  import {fetListArticle,likeArticle,dislikeArticle} from "@/api/article"
   import sortsTree from  '@/components/sortsTree/'
   export default {
     data(){
       return{
+        userId:this.$store.getters.userId,
         total:0,
         articleList:[],
         types:["success", "info", "warning", "warning", "danger", "info", "success", "warning", "danger", "info", "danger"],
@@ -70,6 +77,40 @@
         },
       }
     },methods: {
+      dislike(index){
+        for (var i=0;i<this.articleList[index].articleLikeUsersId.length;i++){
+          if (this.articleList[index].articleLikeUsersId[i]===this.userId){
+            this.articleList[index].articleLikeUsersId.splice(i,1);
+            this.articleList[index].articleLikeCount=this.articleList[index].articleLikeCount-1;
+            dislikeArticle(this.userId,this.articleList[index].articleId).then(res=>{
+              if (res.code===200){
+                this.$message.success("取消点赞成功!")
+              }else {
+                this.$message.error("取消点赞失败!")
+              }
+            })
+          }
+        }
+      },
+      likethis (index) {
+        likeArticle(this.userId,this.articleList[index].articleId).then(res=>{
+          if (res.code===200){
+            this.$message.success("点赞成功!")
+          }else {
+            this.$message.error("点赞失败!")
+          }
+        })
+        this.articleList[index].articleLikeUsersId.push(this.userId);
+        this.articleList[index].articleLikeCount=this.articleList[index].articleLikeCount+1
+      },
+      userLike(item){
+        for (var i=0;i<item.length;i++){
+          if (item[i]===this.userId){
+            return false;
+          }
+        }
+        return true;
+      },
       getSorts($event){
         this.listQuery.sortsList=$event
         this.pageArticle();
@@ -190,5 +231,26 @@
   }
   .pagination {
     background-color: #F9F9F9;
+  }
+
+
+  .thumbs_button{
+    float: left;
+    width:145px;
+    text-align: center;
+    margin:5px auto;
+    height: 45px;
+    line-height: 45px;
+    background-color:#444;
+    color:#fbfbfb;
+    text-align:center;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:16px;
+    transition: all 0.3s;
+    border-radius: 0 0 0 25px;
+    -webkit-border-radius: 0 0 0 25px;
+    -moz-border-radius: 0 0 0 25px;
+    -o-border-radius: 0 0 0 25px;
   }
 </style>

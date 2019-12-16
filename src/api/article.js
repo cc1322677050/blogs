@@ -1,4 +1,5 @@
 import request from "@/utils/request"
+import user from "../store/modules/user";
 
 
 export function  savaArticle(data) {
@@ -41,3 +42,24 @@ export function updataArticle(data) {
     data: data
   })
 }
+
+export function likeArticle(userId,articleId) {
+  return request({
+    url:"/article/like/"+userId,
+    method:"GET",
+    params:{
+      articleId:articleId
+    }
+  })
+}
+
+export function dislikeArticle(userId,articleId) {
+  return request({
+    url:"/article/like/"+userId,
+    method:"DELETE",
+    params:{
+      articleId:articleId
+    }
+  })
+}
+

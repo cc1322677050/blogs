@@ -62,6 +62,8 @@
   import {getLablePage} from '@/api/lables'
   import {getSortTree} from '@/api/sorts'
   import {savaArticle} from '@/api/article'
+  import {getToken} from '@/utils/auth'
+
   export default {
     data(){
       return{
@@ -118,7 +120,7 @@
         },
         imgFile:[],
         progressPercent:0,
-        token:this.$store.getters.avatar.token,
+        token:getToken(),
         dialogVisible:false,
         article:{
           userId:this.$store.getters.userId,

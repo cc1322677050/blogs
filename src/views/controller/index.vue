@@ -55,7 +55,7 @@
                         v-model="visible">
                         <p>你确定要删除这篇文章么？</p>
                         <div style="text-align: right; margin: 0">
-                          <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                          <el-button size="mini"  @click="visible = false">取消</el-button>
                           <el-button type="primary" size="mini" @click="deleteArticle(item.articleId)" >确认删除</el-button>
                         </div>
                         <el-button slot="reference" plain>删除文章</el-button>
@@ -126,8 +126,10 @@
             if (res.code===200){
               this.$message.success('删除成功');
               this.fethchListByUserId();
+              this.visible = false
             }else {
               this.$message.error('删除失败');
+              this.visible = false
             }
         })
       },

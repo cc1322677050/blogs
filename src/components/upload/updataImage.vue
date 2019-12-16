@@ -17,14 +17,16 @@
 <script>
     import axios from 'axios'
     import {beforeAvatarUpload} from "@/utils/imageSize"
+    import {getToken} from '@/utils/auth'
+
     export default {
         name: "updataImage",
+      props:{imageUrl:""},
         data(){
           return{
-            imageUrl:require("@/assets/}$KDC(@K)G82A2_8T@72M~T.png"),
             progressFlag: false,
             progressPercent: 0,
-            token:this.$store.getters.avatar.token
+            token:getToken()
           }
        },methods:{
             uploadImg(f) {

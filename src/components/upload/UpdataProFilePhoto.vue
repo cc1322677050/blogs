@@ -17,6 +17,7 @@
 <script>
   import axios from 'axios'
   import {beforeAvatarUpload} from "@/utils/imageSize"
+  import {getToken} from '@/utils/auth'
 
   export default {
       name: "UpdataProFilePhoto",
@@ -25,11 +26,13 @@
           progressFlag: false,
           progressPercent: 0,
           imageUrl: this.$store.getters.avatar,
-          token:this.$store.getters.avatar.token
+          token:getToken()
         };
       },
       methods: {
         uploadImg(f) {
+          console.log(this.token)
+          console.log(process.env.BASE_API+"/updata/single/imgage")
           this.progressFlag = true
           let formdata = new FormData()
           formdata.append('image', f.file)
