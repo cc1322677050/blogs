@@ -1,8 +1,8 @@
 <template>
     <el-card :bordered="false">
-      <a-col :md="24" :sm="24" style="margin-top: 10px">
+      <el-col :md="24" :sm="24" style="margin-top: 10px">
         <el-input title="评论内容" :placeholder="placeholder" v-model="commentcommentContent" style="width: 650px"/>
-      </a-col>
+      </el-col>
       <div style="text-align: right;margin-top: 1%">
         <el-button v-if="isResponsible" title="取消回复" @click="deleteRespond()" size="mini">取消回复</el-button>
         <el-button @click="giveComment()" title="发表评论" type="primary" style="margin-right: 18px" size="mini">发表评论</el-button>
@@ -46,13 +46,12 @@
   import 'ant-design-vue/lib/table/style/css'
   import moment from 'moment'
   import Reply from '@/components/comment/reply/index'
-  import AFormItem from 'ant-design-vue/es/form/FormItem'
-  import ACol from 'ant-design-vue/es/grid/Col'
   import {getCommentByArticleId,saveComment} from "@/api/comment"
   import {formatTimeToStr} from '@/utils/date';
+
   export default {
     name: 'TestCommentModel',
-    components: {ACol, AFormItem, Reply, Vue},
+    components: {Reply, Vue},
     props:{
       articleIds:""
     },
