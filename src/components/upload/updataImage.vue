@@ -20,7 +20,7 @@
     import {getToken} from '@/utils/auth'
 
     export default {
-        name: "updataImage",
+      name: "updataImage",
       props:{imageUrl:""},
         data(){
           return{

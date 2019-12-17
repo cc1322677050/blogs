@@ -22,10 +22,10 @@
                     <el-button plain>阅读全文</el-button>
                   </router-link>
                   <div class="view" style="font-size: 18px">
-                      <a class="el-icon-star-off" :model="item.articleLikeUsersId"  v-if="userLike(item.articleLikeUsersId)" @click="likethis(index)">{{item.articleLikeCount}}</a>
-                      <a v-else class="el-icon-star-on"   @click="dislike(index)"> {{item.articleLikeCount}}</a>
+                      <a class="el-icon-star-off" :model="item.articleLikeUsersId"  v-if="userLike(item.articleLikeUsersId)" @click="likethis(index)">点赞量: {{item.articleLikeCount}}</a>
+                      <a v-else class="el-icon-star-on"   @click="dislike(index)"> 点赞量: {{item.articleLikeCount}}</a>
                       <el-divider direction="vertical"></el-divider>
-                      <i class="el-icon-view"></i> {{item.articleViews}}
+                      <i class="el-icon-view"></i> 浏览量: {{item.articleViews}}
                   </div>
                 </div>
               </div>

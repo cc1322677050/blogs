@@ -24,13 +24,13 @@
         <div id="artcle-content">
           <p v-html="article.articleContent"></p>
         </div>
+        <comment :articleIds="this.article.articleId"></comment>
         <div id="statement">
           <div class="item">作者：{{userinfo.userNickname}}</div>
           <div class="item">联系方式：{{userinfo.userEmail}}</div>
           <div class="item">版权声明：本博客所有文章除特别声明外,转载请注明出处!</div>
         </div>
       </el-col>
-
     </el-row>
   </div>
 </template>
@@ -39,6 +39,7 @@
   import Navbar from "../layout/components/Navbar";
   import {getUserByUserId} from '@/api/users';
   import {addViews} from '@/api/article'
+  import comment from '@/components/comment'
   export default {
     name: 'article',
     data(){
@@ -62,7 +63,8 @@
       this.getUser()
     },
     components:{
-      Navbar
+      Navbar,
+      comment
     }
   }
 </script>
@@ -98,6 +100,7 @@
   }
 
   #statement {
+    margin-top: 2%;
     border-left: 3px solid #F56C6C;
     padding: 20px;
     background-color: #EBEEF5;
