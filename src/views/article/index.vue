@@ -21,8 +21,10 @@
             前言：{{article.description}}
           </p>
         </div>
-        <div id="artcle-content">
-          <p v-html="article.articleContent"></p>
+        <div id="artcle-content"
+             class="html_text"
+             v-html="article.articleContent">
+
         </div>
         <comment :articleIds="this.article.articleId"></comment>
         <div id="statement">
@@ -32,6 +34,7 @@
         </div>
       </el-col>
     </el-row>
+    <footer></footer>
   </div>
 </template>
 
@@ -64,7 +67,7 @@
     },
     components:{
       Navbar,
-      comment
+      comment,
     }
   }
 </script>
@@ -75,21 +78,18 @@
     background-image: url(../../assets/bg1.jpg);
     margin-bottom: 40px;
   }
-
   #artcle-info .abstract {
     color: #ffffff;
     border-left: 3px solid #F56C6C;
     padding: 10px;
     background-color: rgba(126, 129, 135, 0.3);
   }
-
   #artcle-info .timeAndView {
     padding: 20px;
     line-height: 30px;
     font-size: 16px;
     color: #ffffff;
   }
-
   pre.has {
     color: #ffffff;
     background-color: rgba(0, 0, 0, 0.8);
@@ -98,11 +98,17 @@
   img.has {
     width: 100%;
   }
-
+  .main{
+    width: 70%;
+    margin: 0 auto;
+  }
   #statement {
     margin-top: 2%;
     border-left: 3px solid #F56C6C;
     padding: 20px;
     background-color: #EBEEF5;
+  }
+  .html_text{
+    font-size: 18px;
   }
 </style>
